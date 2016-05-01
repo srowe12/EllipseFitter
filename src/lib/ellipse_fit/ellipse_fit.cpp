@@ -1,13 +1,13 @@
 #include "ellipse_fit.h"
 
-std::vector<double> FitEllipse(const std::vector<double>& x, const std::vector<double>& y)
+std::array<double,6> FitEllipse(const std::vector<double>& x, const std::vector<double>& y)
 {
    arma::mat::fixed<3,3> M,T;
    AssembleMatrices(arma::vec(x), arma::vec(y), M,T);
-   arma::vec optimal_eigenvector = ComputeOptimalEigenvector(M);
-   arma::vec linear_coefs = T*optimal_eigenvector;
+   arma::vec::fixed<3> optimal_eigenvector = ComputeOptimalEigenvector(M);
+   arma::vec::fixed<3> linear_coefs = T*optimal_eigenvector;
 
-   std::vector<double> ellipse_coefs{optimal_eigenvector(0), optimal_eigenvector(1), optimal_eigenvector(2), linear_coefs(0), linear_coefs(1), linear_coefs(2)};
+   std::array<double,6> ellipse_coefs{{optimal_eigenvector(0), optimal_eigenvector(1), optimal_eigenvector(2), linear_coefs(0), linear_coefs(1), linear_coefs(2)}};
    return ellipse_coefs;
 }
 
@@ -37,26 +37,15 @@ void AssembleMatrices(const arma::vec& x, const arma::vec& y, arma::mat::fixed<3
 
 }
 
-arma::vec ComputeOptimalEigenvector(const arma::mat::fixed<3,3>& M) {
-   arma::cx_vec eigval(3);
-   arma::cx_mat eigvec_complex(3,3);
+arma::vec::fixed<3> ComputeOptimalEigenvector(const arma::mat::fixed<3,3>& M) {
+   arma::cx_vec::fixed<3> eigval;
+   arma::cx_mat::fixed<3,3> eigvec_complex;
  
    eig_gen(eigval, eigvec_complex, M);
-   ///@todo Hmmm, this seems gross having to cast as a real vector.
-   arma::mat eigvec = real(eigvec_complex);
-   arma::rowvec cond = 4*eigvec.row(0) % eigvec.row(2) - eigvec.row(1) % eigvec.row(1);
+   ///@todo Hmmm, this seems gross having to cast as a real vector. Not sure if this is valid either.
+   arma::mat::fixed<3,3> eigvec = real(eigvec_complex);
+   arma::rowvec::fixed<3> cond = 4*eigvec.row(0) % eigvec.row(2) - eigvec.row(1) % eigvec.row(1);
    return eigvec.cols(arma::find(cond > 0));
 
 }
 
-arma::vec ComputeOptimalEigenvector(const arma::mat& M) {
-   arma::cx_vec eigval;
-   arma::cx_mat eigvec_complex;
- 
-   eig_gen(eigval, eigvec_complex, M);
-   ///@todo Hmmm, this seems gross having to cast as a real vector.
-   arma::mat eigvec = real(eigvec_complex);
-   arma::rowvec cond = 4*eigvec.row(0) % eigvec.row(2) - eigvec.row(1) % eigvec.row(1);
-   return eigvec.cols(arma::find(cond > 0));
-
-}
