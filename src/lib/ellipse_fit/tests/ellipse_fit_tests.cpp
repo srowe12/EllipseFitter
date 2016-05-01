@@ -25,8 +25,8 @@ TEST(EllipseFitTests, AssembleMatricesTest) {
     
    arma::vec xvec(x);
    arma::vec yvec(y); 
-   arma::mat M(3,3); 
-   arma::mat T(3,3);
+   arma::mat::fixed<3,3> M; 
+   arma::mat::fixed<3,3> T;
    AssembleMatrices(xvec,yvec,M,T); 
    
    arma::mat expected_M{ {-1.865454545454545454, 0, 1.04931818181818181}, { 0, -3.42, 0}, {3.3163636363636363, 0, -1.86545454545454}};

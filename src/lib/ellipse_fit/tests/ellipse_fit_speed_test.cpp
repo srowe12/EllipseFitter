@@ -106,8 +106,8 @@ int main() {
 
    arma::vec xin(x);
    arma::vec yin(y); 
-   arma::mat M(3,3); 
-   arma::mat T(3,3);
+   arma::mat::fixed<3,3> M; 
+   arma::mat::fixed<3,3> T;
 
    start = std::chrono::steady_clock::now();
    AssembleMatrices(xin,yin,M,T); 

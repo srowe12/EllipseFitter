@@ -2,7 +2,7 @@
 
 std::vector<double> FitEllipse(const std::vector<double>& x, const std::vector<double>& y)
 {
-   arma::mat M,T;
+   arma::mat::fixed<3,3> M,T;
    AssembleMatrices(arma::vec(x), arma::vec(y), M,T);
    arma::vec optimal_eigenvector = ComputeOptimalEigenvector(M);
    arma::vec linear_coefs = T*optimal_eigenvector;
@@ -12,7 +12,7 @@ std::vector<double> FitEllipse(const std::vector<double>& x, const std::vector<d
 }
 
 
-void AssembleMatrices(const arma::vec& x, const arma::vec& y, arma::mat& M, arma::mat& T) {
+void AssembleMatrices(const arma::vec& x, const arma::vec& y, arma::mat::fixed<3,3>& M, arma::mat::fixed<3,3>& T) {
     size_t nrows = x.size();
     arma::mat D(nrows,6);
     D.col(0) = x % x;

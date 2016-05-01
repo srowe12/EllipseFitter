@@ -6,9 +6,8 @@
 
 std::vector<double>  FitEllipse(const std::vector<double>& x, const std::vector<double>& y);
 
-void AssembleMatrices(const arma::vec& x, const arma::vec& y, arma::mat& M, arma::mat& T);
-void AssembleMatricesFast(const arma::vec& x, const arma::vec& y, arma::mat& M, arma::mat& T);
+void AssembleMatrices(const arma::vec& x, const arma::vec& y, arma::mat::fixed<3,3>& M, arma::mat::fixed<3,3>& T);
 
-arma::vec ComputeOptimalEigenvector(const arma::mat& M);
+arma::vec ComputeOptimalEigenvector(const arma::mat::fixed<3,3>& M);
 
 #endif // ELLIPSE_FIT_H
