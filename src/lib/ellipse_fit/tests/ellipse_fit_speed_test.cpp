@@ -94,11 +94,11 @@ int main() {
    // Test speed of code here:
    auto start = std::chrono::steady_clock::now();
    
-   std::vector<double> coefs = FitEllipse(x_in,y_in); 
+   std::array<double,6> ellipse_coefs = FitEllipse(x_in,y_in);
 
    auto end = std::chrono::steady_clock::now();
 
-   std::cout << "The first coef is" << coefs[0] << std::endl;
+   std::cout << "The first coef is" << ellipse_coefs[0] << std::endl;
 
    auto diff = end - start;
 

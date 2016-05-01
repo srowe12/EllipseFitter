@@ -73,7 +73,7 @@ TEST(EllipseFitTests, FitEllipse) {
        t += angle_delta;
    }
 
-   std::vector<double> ellipse_coefs = FitEllipse(x,y);
+   std::array<double,6> ellipse_coefs = FitEllipse(x,y);
    std::vector<double> ellipse_coefs_expected{-.490261239632559,0,-.871575537124549,0,0,7.844179834120943};
    for(size_t i =0; i<ellipse_coefs_expected.size(); ++i) {
        // They may differ by a sign, so normalize by the constant coefficient to handle sign
@@ -119,7 +119,7 @@ TEST(EllipseFitTests, FitEllipseRotated) {
    std::vector<double> y_in = arma::conv_to<std::vector<double>>::from(yvec);
    
 
-   std::vector<double> ellipse_coefs = FitEllipse(x_in,y_in);
+   std::array<double,6> ellipse_coefs = FitEllipse(x_in,y_in);
    std::vector<double> ellipse_coefs_expected{-.65743960379771, .368166178126752, -.657439603797772,0,0,7.573704235750322};
    for(size_t i =0; i<ellipse_coefs_expected.size(); ++i) {
        // They may differ by a sign, so normalize by the constant coefficient to handle sign
@@ -172,7 +172,7 @@ TEST(EllipseFitTests, FitEllipseRotatedAndShifted) {
        y_in[i] += y_center;
    }
 
-   std::vector<double> ellipse_coefs = FitEllipse(x_in,y_in);
+   std::array<double,6> ellipse_coefs = FitEllipse(x_in,y_in);
    std::vector<double> ellipse_coefs_expected{-.65743960379771, .368166178126752, -.657439603797772,.578546851342042,2.261592237064336,5.022838573014967};
    for(size_t i =0; i<ellipse_coefs_expected.size(); ++i) {
        // They may differ by a sign, so normalize by the constant coefficient to handle sign
