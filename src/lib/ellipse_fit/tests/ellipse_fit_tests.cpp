@@ -42,3 +42,15 @@ int main(int argc, char **argv) {
 
   return return_value;
 }
+
+TEST(EllipseFitTests, ComputeOptimalEigenvectorTest) {
+
+   arma::mat M{ {-1.865454545454545454, 0, 1.04931818181818181}, { 0, -3.42, 0}, {3.3163636363636363, 0, -1.86545454545454}};
+   M *=1e2;
+   arma::vec expected_optimal_eigenvector{-.490261239632559,0, -.871575537124549};
+
+   arma::vec optimal_eigenvector = ComputeOptimalEigenvector(M);
+
+   arma::vec diff = optimal_eigenvector - expected_optimal_eigenvector;
+   EXPECT_NEAR(0, arma::norm(diff), 1e-12);
+}

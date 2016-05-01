@@ -1,6 +1,5 @@
 #include "ellipse_fit.h"
 
-
 std::vector<double> FitEllipse(const std::vector<double>& x, const std::vector<double>& y)
 {
    std::vector<double> lol(6,0); 
@@ -37,3 +36,14 @@ arma::mat AssembleMatrices(const arma::vec& x, const arma::vec& y) {
 
 }
 
+arma::vec ComputeOptimalEigenvector(const arma::mat& M) {
+   arma::cx_vec eigval;
+   arma::cx_mat eigvec_complex;
+ 
+   eig_gen(eigval, eigvec_complex, M);
+   ///@todo Hmmm, this seems gross having to cast as a real vector.
+   arma::mat eigvec = real(eigvec_complex);
+   arma::rowvec cond = 4*eigvec.row(0) % eigvec.row(2) - eigvec.row(1) % eigvec.row(1);
+   return eigvec.cols(arma::find(cond > 0));
+
+}
