@@ -2,11 +2,16 @@
 
 std::vector<double> FitEllipse(const std::vector<double>& x, const std::vector<double>& y)
 {
-   std::vector<double> lol(6,0); 
-   return lol;
+   arma::mat M,T;
+   AssembleMatrices(arma::vec(x), arma::vec(y), M,T);
+   arma::vec optimal_eigenvector = ComputeOptimalEigenvector(M);
+   arma::vec linear_coefs = T*optimal_eigenvector;
+
+   std::vector<double> ellipse_coefs{optimal_eigenvector(0), optimal_eigenvector(1), optimal_eigenvector(2), linear_coefs(0), linear_coefs(1), linear_coefs(2)};
+   return ellipse_coefs;
 }
 
-arma::mat AssembleMatrices(const arma::vec& x, const arma::vec& y) {
+void AssembleMatrices(const arma::vec& x, const arma::vec& y, arma::mat& M, arma::mat& T) {
     size_t nrows = x.size();
 
     arma::mat D1(nrows, 3);
@@ -23,16 +28,14 @@ arma::mat AssembleMatrices(const arma::vec& x, const arma::vec& y) {
     arma::mat S1 = D1.t()*D1;
     arma::mat S2 = D1.t()*D2;
     arma::mat S3 = D2.t()*D2;
-    arma::mat T = -inv(S3)*S2.t();
-    arma::mat M = S1 + S2*T;
+    T = -inv(S3)*S2.t();
+    M = S1 + S2*T;
     
     ///@todo may be faster to multiply through by .5 then by -2 on row(1)
     M.row(2) *= .5;
     M.row(1) *=  -1;
     M.row(0) *= .5;
     M.swap_rows(0,2);
-    // Also return T! 
-    return M;
 
 }
 
