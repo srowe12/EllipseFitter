@@ -11,23 +11,46 @@ std::vector<double> FitEllipse(const std::vector<double>& x, const std::vector<d
    return ellipse_coefs;
 }
 
+
 void AssembleMatrices(const arma::vec& x, const arma::vec& y, arma::mat& M, arma::mat& T) {
     size_t nrows = x.size();
+    arma::mat D(nrows,6);
+    D.col(0) = x % x;
+    D.col(1) = x % y;
+    D.col(2) = y % y;
+    D.col(3) = x;
+    D.col(4) = y;
+    D.col(5) = arma::ones(nrows,1);
+    arma::mat S = D.t() * D;
 
-    arma::mat D1(nrows, 3);
-    D1.col(0) = x % x; // x*x
-    D1.col(1) = x % y; // x*y
-    D1.col(2) = y % y; // y*y
-    // Assemble linear chunk matrix 
-    arma::mat D2(nrows,3);
-    D2.col(0) = x;
-    D2.col(1) = y;
-    D2.col(2) = arma::ones(nrows,1);
+    auto S1 = S.submat(0,0,2,2);
+    auto S2 = S.submat(0,3,2,5);
+    auto S3 = S.submat(3,3,5,5);   
+    T = -inv(S3)*S2.t();
+    M = S1 + S2*T;
+    
+    ///@todo may be faster to multiply through by .5 then by -2 on row(1)
+    M.row(2) *= .5;
+    M.row(1) *=  -1;
+    M.row(0) *= .5;
+    M.swap_rows(0,2);
 
+}
 
-    arma::mat S1 = D1.t()*D1;
-    arma::mat S2 = D1.t()*D2;
-    arma::mat S3 = D2.t()*D2;
+void AssembleMatricesFast(const arma::vec& x, const arma::vec& y, arma::mat& M, arma::mat& T) {
+    size_t nrows = x.size();
+    arma::mat D(nrows,6);
+    D.col(0) = x % x;
+    D.col(1) = x % y;
+    D.col(2) = y % y;
+    D.col(3) = x;
+    D.col(4) = y;
+    D.col(5) = arma::ones(nrows,1);
+    arma::mat S = D.t() * D;
+
+    const auto& S1 = S.submat(0,0,2,2);
+    const auto& S2 = S.submat(0,3,2,5);
+    const auto& S3 = S.submat(3,3,5,5);   
     T = -inv(S3)*S2.t();
     M = S1 + S2*T;
     
