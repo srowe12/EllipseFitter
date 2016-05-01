@@ -7,10 +7,9 @@ find_package(GTest REQUIRED)
 #and put the include directory in the build also. This is a hack.
 #For Armadillo, you may need to export CMAKE_PREFIX_PATH=$YOUR_ARMADILLO_ROOT
 find_package(Threads)
-find_package(OpenMP)
 include_directories(${GTEST_INCLUDE_DIRS})
 SET(CMAKE_CXX_FLAGS "-std=c++11 -Wall -O3")
 if (OPENMP_FOUND)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 endif()

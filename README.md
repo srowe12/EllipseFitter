@@ -6,5 +6,6 @@ Our goal was to provide a C++ function with an API leveraging just common STL ob
 We have the following requirements:
 * CMake version 2.8 at least
 * Armadillo (version 6.4 was used in our tests)
-
-
+* GoogleTest 
+* Pthread (GoogleTest seems to require this on my Ubuntu 14.04)
+* C++11 compliant compiler
