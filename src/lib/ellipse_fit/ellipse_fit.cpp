@@ -9,6 +9,7 @@ std::vector<double> FitEllipse(const std::vector<double>& x, const std::vector<d
 
 arma::mat AssembleMatrices(const arma::vec& x, const arma::vec& y) {
     size_t nrows = x.size();
+
     arma::mat D1(nrows, 3);
     D1.col(0) = x % x; // x*x
     D1.col(1) = x % y; // x*y
@@ -23,24 +24,16 @@ arma::mat AssembleMatrices(const arma::vec& x, const arma::vec& y) {
     arma::mat S1 = D1.t()*D1;
     arma::mat S2 = D1.t()*D2;
     arma::mat S3 = D2.t()*D2;
-    
     arma::mat T = -inv(S3)*S2.t();
- 
-    arma::mat M = S1 - S2*T;
+    arma::mat M = S1 + S2*T;
     
-    //Multiply by C1.inv();
     ///@todo may be faster to multiply through by .5 then by -2 on row(1)
     M.row(2) *= .5;
     M.row(1) *=  -1;
     M.row(0) *= .5;
-    
+    M.swap_rows(0,2);
     // Also return T! 
     return M;
 
 }
 
-int main() {
-   std::vector<double> x;
-   arma::mat lolmat{ {1,0},{0,1}};
-   return 0;
-}
